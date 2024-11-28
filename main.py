@@ -54,3 +54,19 @@ sources = {
 }
 
 sentences = LabeledLineSentence(sources)
+
+model = Doc2Vec(min_count=1, window=10, sample=1e-4, negative=5, workers=7)
+
+model.build_vocab(sentences.to_array())
+
+for epoch in range(10):
+    model.train(
+    sentences.sentences_perm(),
+    total_examples=model.corpus_count,  # Total number of sentences
+    epochs=model.epochs                 # Number of epochs (default from model)
+)
+
+print(model.wv.most_similar('good'))
+model['TRAIN_NEG_0']
+model.save('./imdb.d2v')
+model = Doc2Vec.load('/Users/dineshupadhyay/MoviesSentimentAnalysis/imdb.d2v')
